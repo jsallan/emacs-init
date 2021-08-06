@@ -1,3 +1,5 @@
+;; Testing if this made it to github
+
 (setq inhibit-startup-message t)
 
 (scroll-bar-mode -1)      ; disable visible scroll bar
