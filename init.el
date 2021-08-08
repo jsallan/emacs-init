@@ -131,7 +131,10 @@
   (rune/leader-keys
     "t"  '(:ignore t :which-key "toggles")
     "tt" '(counsel-load-theme :which-key "choose theme")
-    "i" '(my-open-init-file :which-key "open init file")))
+    "i"  '(my-open-init-file :which-key "open init file")
+    "b"  '(:ignore t :which-key "buffer cycle")
+    "bk" '(next-buffer :which-key "next buffer")
+    "bj" '(switch-to-prev-buffer :which-key "previous buffer")))
 
 (use-package evil
   :init
@@ -171,8 +174,15 @@
   ("k" text-scale-decrease "out")
   ("f" nil "finished" :exit t))
 
+(defhydra hydra-switch-buffer/body (:timeout 4)
+  "switch buffer"
+  ("j" switch-to-next-buffer "next")
+  ("k" switch-to-prev-buffer "prev")
+  ("f" nil "finished" :exit t))
+
 (rune/leader-keys
-  "ts" '(hydra-text-scale/body :which-key "scale text"))
+  "ts" '(hydra-text-scale/body :which-key "scale text")
+  "bs" '(hydra-switch-buffer/body :which-key "switch buffers"))
 
 ;; Org-mode Configuration -------------------------------------------------
 
