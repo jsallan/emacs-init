@@ -1,5 +1,5 @@
 #+title: Emacs Configuration Generator
-#+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle user-init-directory :mkdirp yes
 
 * Introduction
 
@@ -522,7 +522,7 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
   ;; Automatically tangle our Emacs.org config file when we save it
   (defun drudge/org-babel-tangle-config ()
     (when (string-equal (buffer-file-name)
-                        (expand-file-name "~/.emacs.d/EmacsConfig.org"))
+                        (expand-file-name "EmacsConfig.org"))
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
         (org-babel-tangle))))
@@ -532,7 +532,7 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
 #+end_src
 
 #+RESULTS:
-| (lambda nil (add-hook 'after-save-hook #'drudge/org-babel-tangle-config)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | drudge/org-mode-setup | (lambda nil (display-line-numbers-mode 0)) |
+| #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | (lambda nil (add-hook 'after-save-hook #'drudge/org-babel-tangle-config)) | org-tempo-setup | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | drudge/org-mode-visual-fill | drudge/org-mode-setup | (lambda nil (display-line-numbers-mode 0)) |
 
 
 * Development
