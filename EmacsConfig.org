@@ -584,8 +584,8 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
      ("C-c p" . projectile-command-map)
      :init
      ;; NOTE: Set this to the folder where you keep your Git repos!
-     (when (file-directory-p "~/Projects/Code")
-       (setq projectile-project-search-path '("~/Projects/Code")))
+     (when (file-directory-p "~/github/Projects")
+       (setq projectile-project-search-path '("~/github/Projects")))
      (setq projectile-switch-project-action #'projectile-dired))
    (use-package counsel-projectile
      :config (counsel-projectile-mode))
@@ -601,16 +601,13 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
      :custom
      (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 
-   (use-package evil-magit
-     :after magit)
-
    ;; NOTE: Make sure to configure a GitHub token before using this package!
    ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
    ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
    (use-package forge)
 
  #+end_src
-
+ 
 ** Rainbow Delimiters
 
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
