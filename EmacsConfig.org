@@ -1,9 +1,10 @@
 #+title: Emacs Configuration Generator
-#+PROPERTY: header-args:emacs-lisp :tangle user-init-directory :mkdirp yes
+#+PROPERTY: header-args:emacs-lisp :tangle (eval user-init-file) :mkdirp yes
+#+STARTUP: overview
 
 * Introduction
 
-This file generates [[file:init.el][init.el]] which can be loaded by Emacs at startup. asd
+This file generates [[file:init.el][init.el]] which can be loaded by Emacs at startup. 
 
 The following variables are used to tweak some of the configuration pieces for use in the live streams so you might need to adjust them for your local machine if you try to use this configuration directly.
 
@@ -111,7 +112,9 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
     (drudge/leader-keys
       "t"  '(:ignore t :which-key "toggles")
       "tt" '(counsel-load-theme :which-key "choose theme")
-      "i"  '(my-open-init-file :which-key "open init file")
+      "i"  '(:ignore t :which-key "config and init files")
+      "ii"  '(my-open-init-file :which-key "open init file")
+      "ie"  '(my-open-emacs-config-org :which-key "open EmacsConfig file")
       "b"  '(:ignore t :which-key "buffer cycle")
       "bk" '(next-buffer :which-key "next buffer")
       "bj" '(switch-to-prev-buffer :which-key "previous buffer")))
@@ -138,6 +141,13 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
     :after evil
     :config
     (evil-collection-init))
+
+
+#+end_src
+
+** Key-chord
+
+#+begin_src emacs-lisp
 
   (use-package key-chord
     :after evil
@@ -332,9 +342,9 @@ This section contains the basic configuration for =org-mode= plus the configurat
     :hook (org-mode . drudge/org-mode-setup)
     :config
     (setq org-ellipsis " ▾")
-    (setq org-blank-before-new-entry
-      '((heading . always)
-       (plain-list-item . always)))
+;;    (setq org-blank-before-new-entry
+;;      '((heading . always)
+;;       (plain-list-item . always)))
 
     (setq org-agenda-start-with-log-mode t)
     (setq org-log-done 'time)
@@ -500,6 +510,31 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
 
 #+end_src
 
+** Org-roam
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/RoamNotes")
+    (org-roam-completion-everywhere t)
+    (org-roam-capture-templates
+     '(("d" "default" plain
+        "%?"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point))
+    :config
+    (org-roam-setup))
+
+#+end_src
+
 ** Org-Tempo
 
 This package helps to insert code snippet for different languages.
@@ -532,8 +567,7 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
 #+end_src
 
 #+RESULTS:
-| #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | (lambda nil (add-hook 'after-save-hook #'drudge/org-babel-tangle-config)) | org-tempo-setup | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | drudge/org-mode-visual-fill | drudge/org-mode-setup | (lambda nil (display-line-numbers-mode 0)) |
-
+| (lambda nil (add-hook 'after-save-hook #'drudge/org-babel-tangle-config)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | drudge/org-mode-setup | (lambda nil (display-line-numbers-mode 0)) |
 
 * Development
 
@@ -568,7 +602,7 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
 
 #   (use-package magit
 #     :custom
-#     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#     (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 
 #   (use-package evil-magit
 #     :after magit)
@@ -595,6 +629,21 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
 
 ** Open EmacsConfig.org file
 
+Function to open this file. Will be bound to a SPC shortcut.
+
+#+begin_src emacs-lisp
+
+  (defun my-open-emacs-config-org ()
+    "Open the init file."
+    (interactive)
+    (find-file (concat (file-name-directory user-init-file) "EmacsConfig.org")))
+
+  #+end_src
+
+** Open init.el
+
+Function to open the actual init.el file. This should only be used as a reference. The master is this EmacsConfig.org file.
+
 #+begin_src emacs-lisp
 
   (defun my-open-init-file ()
@@ -602,7 +651,7 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
     (interactive)
     (find-file user-init-file))
 
-  #+end_src
+#+end_src
 
 ** Some App
 
