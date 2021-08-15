@@ -575,44 +575,41 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
 
 # [[https://projectile.mx/][Projectile]] is a project management library for Emacs which makes it a lot easier to navigate around code projects for various languages.  Many packages integrate with Projectile so it's a good idea to have it installed even if you don't use its commands directly.
 
-# #+begin_src emacs-lisp
-
-#   (use-package projectile
-#     :diminish projectile-mode
-#     :config (projectile-mode)
-#     :custom ((projectile-completion-system 'ivy))
-#     :bind-keymap
-#     ("C-c p" . projectile-command-map)
-#     :init
-#     ;; NOTE: Set this to the folder where you keep your Git repos!
-#     (when (file-directory-p "~/Projects/Code")
-#       (setq projectile-project-search-path '("~/Projects/Code")))
-#     (setq projectile-switch-project-action #'projectile-dired))
-
-#   (use-package counsel-projectile
-#     :config (counsel-projectile-mode))
-
-# #+end_src
+ #+begin_src emacs-lisp
+   (use-package projectile
+     :diminish projectile-mode
+     :config (projectile-mode)
+     :custom ((projectile-completion-system 'ivy))
+     :bind-keymap
+     ("C-c p" . projectile-command-map)
+     :init
+     ;; NOTE: Set this to the folder where you keep your Git repos!
+     (when (file-directory-p "~/Projects/Code")
+       (setq projectile-project-search-path '("~/Projects/Code")))
+     (setq projectile-switch-project-action #'projectile-dired))
+   (use-package counsel-projectile
+     :config (counsel-projectile-mode))
+ #+end_src
 
 ** Magit
 
 # [[https://magit.vc/][Magit]] is the best Git interface I've ever used.  Common Git operations are easy to execute quickly using Magit's command panel system.
 
-# #+begin_src emacs-lisp
+ #+begin_src emacs-lisp
 
-#   (use-package magit
-#     :custom
-#     (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
+   (use-package magit
+     :custom
+     (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 
-#   (use-package evil-magit
-#     :after magit)
+   (use-package evil-magit
+     :after magit)
 
-#   ;; NOTE: Make sure to configure a GitHub token before using this package!
-#   ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
-#   ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
-#   (use-package forge)
+   ;; NOTE: Make sure to configure a GitHub token before using this package!
+   ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+   ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+   (use-package forge)
 
-# #+end_src
+ #+end_src
 
 ** Rainbow Delimiters
 
