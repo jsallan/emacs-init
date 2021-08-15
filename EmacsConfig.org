@@ -630,7 +630,8 @@ Function to open this file. Will be bound to a SPC shortcut.
   (defun my-open-emacs-config-org ()
     "Open the init file."
     (interactive)
-    (find-file (concat (file-name-directory user-init-file) "EmacsConfig.org")))
+;    (find-file (concat (file-name-directory user-init-file) "EmacsConfig.org")))
+    (find-file "~/github/emacs-init/EmacsConfig.org"))
 
   #+end_src
 
