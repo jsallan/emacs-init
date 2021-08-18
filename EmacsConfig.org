@@ -548,6 +548,32 @@ This package helps to insert code snippet for different languages.
 
 #+end_src
 
+** Org-download
+
+This package enables a captured screenshot to be pasted from the clipboard. The blog that the config was copied from is [[https://zzamboni.org/post/how-to-insert-screenshots-in-org-documents-on-macos/][here]]. Note that a system utility to manage image-pasting has to be identified. For MacOS, use pngpaste. For Windows, gotta figure it out. Will need to use the variable system-type. 
+
+#+begin_src emacs-lisp
+
+  (use-package org-download
+    :after org
+    :defer nil
+    :custom
+    (org-download-method 'directory)
+    (org-download-image-dir "images")
+    (org-download-headingorg-download-screenshot-method-lvl nil)
+    (org-download-timestamp "%Y%m%d-%H%M%S_")
+    (org-image-actual-width 300)
+    (org-download-screenshot-method "/usr/local/bin/pngpaste %s")
+    :bind
+    ("C-M-y" . org-download-screenshot)
+    :config
+    (require 'org-download))
+
+#+end_src
+
+#+RESULTS:
+: org-download-screenshot
+
 ** Auto-tangle Configuration Files
 
 This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
