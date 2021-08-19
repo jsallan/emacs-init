@@ -658,11 +658,15 @@ Function to open this file. Will be bound to a SPC shortcut.
 
 #+begin_src emacs-lisp
 
-  (defun my-open-emacs-config-org ()
-    "Open the init file."
-    (interactive)
-;    (find-file (concat (file-name-directory user-init-file) "EmacsConfig.org")))
-    (find-file "~/github/emacs-init/EmacsConfig.org"))
+    (defun my-open-emacs-config-org ()
+      "Open the init file."
+      (interactive)
+  ;    (find-file (concat (file-name-directory user-init-file) "EmacsConfig.org")))
+      (if (eq system-type 'darwin)
+        (setq emacs-config-orgfile-location "~/github/emacs-init/EmacsConfig.org"))
+      (if (eq system-type 'windows-nt)
+        (setq emacs-config-orgfile-location "C:/Users/Jason/Documents/github/emacs-init/EmacsConfig.org"))
+      (find-file emacs-config-orgfile-location))
 
   #+end_src
 
