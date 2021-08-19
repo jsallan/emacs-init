@@ -554,16 +554,21 @@ This package enables a captured screenshot to be pasted from the clipboard. The 
 
 #+begin_src emacs-lisp
 
+  (if (eq system-type 'darwin)
+        (setq system-screenshot-method "/usr/local/bin/pngpaste %s"))
+  (if (eq system-type 'windows-nt)
+        (setq system-screenshot-method "convert clipboard: %s"))
+
   (use-package org-download
     :after org
     :defer nil
     :custom
     (org-download-method 'directory)
     (org-download-image-dir "images")
-    (org-download-headingorg-download-screenshot-method-lvl nil)
+    (org-download-heading-lvl nil)
     (org-download-timestamp "%Y%m%d-%H%M%S_")
     (org-image-actual-width 300)
-    (org-download-screenshot-method "/usr/local/bin/pngpaste %s")
+    (org-download-screenshot-method system-screenshot-method)
     :bind
     ("C-M-y" . org-download-screenshot)
     :config
