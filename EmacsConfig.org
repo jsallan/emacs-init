@@ -514,30 +514,51 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
 
 #+begin_src emacs-lisp
 
-  (if (eq system-type 'darwin)
-        (setq system-specific-org-roam-directory "~/github/org/roam"))
-  (if (eq system-type 'windows-nt)
-        (setq system-specific-org-roam-directory "C:/Users/Jason/Documents/github/Org/roam"))
+      (if (eq system-type 'darwin)
+            (setq system-specific-org-roam-directory "~/github/org/roam"))
+      (if (eq system-type 'windows-nt)
+            (setq system-specific-org-roam-directory "C:/Users/Jason/Documents/github/Org/roam"))
 
-  (use-package org-roam
-    :ensure t
-    :init
-    (setq org-roam-v2-ack t)
-    :custom
-    (org-roam-directory system-specific-org-roam-directory)
-    (org-roam-completion-everywhere t)
-    (org-roam-capture-templates
-     '(("d" "default" plain
-        "%?"
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-        :unnarrowed t)))
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n i" . org-roam-node-insert)
-           :map org-mode-map
-           ("C-M-i" . completion-at-point))
-    :config
-    (org-roam-setup))
+      (use-package org-roam
+        :ensure t
+        :init
+        (setq org-roam-v2-ack t)
+        :custom
+        (org-roam-directory system-specific-org-roam-directory)
+        (org-roam-completion-everywhere t)
+        (org-roam-capture-templates
+         '(("d" "default" plain
+            "%?"
+            :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+            :unnarrowed t)
+           ("s" "Scrum Mastery" plain
+             "\n* Source\n\Book: [[id:7B6531E9-3AF7-47D3-A7CA-4EE56E1E9431][Scrum Mastery]]\nPage: %^{page}\n\n\n* Book Notes\n\n%?\n* Thoughts and Ideas\n"
+           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+captured: %U")
+            :unnarrowed t)))
+       :bind (("C-c n l" . org-roam-buffer-toggle)
+               ("C-c n f" . org-roam-node-find)
+               ("C-c n i" . org-roam-node-insert)
+               :map org-mode-map
+               ("C-M-i" . completion-at-point))
+        :config
+        (org-roam-setup))
+
+  (setq org-roam-mode-section-functions
+        (list #'org-roam-backlinks-section
+              #'org-roam-reflinks-section
+              ;; #'org-roam-unlinked-references-section
+              ))
+
+    (add-to-list 'display-buffer-alist
+                 '("\\*org-roam\\*"
+                   (display-buffer-in-direction)
+                   (direction . right)
+                   (window-width . 0.33)
+                   (window-height . fit-window-to-buffer)))
+
+  (add-to-list 'load-path "~/.emacs.d/private/org-roam-ui")
+  (load-library "org-roam-ui")
+
 
 #+end_src
 
