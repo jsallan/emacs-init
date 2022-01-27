@@ -1,5 +1,6 @@
 #+title: Emacs Configuration Generator
-#+PROPERTY: header-args:emacs-lisp :tangle user-init-directory :mkdirp yes
+
+#+PROPERTY: header-args:emacs-lisp :tangle (eval user-init-file) :mkdirp yes
 
 * Introduction
 
@@ -533,7 +534,6 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
 
 #+RESULTS:
 | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | (lambda nil (add-hook 'after-save-hook #'drudge/org-babel-tangle-config)) | org-tempo-setup | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | drudge/org-mode-visual-fill | drudge/org-mode-setup | (lambda nil (display-line-numbers-mode 0)) |
-
 
 * Development
 
