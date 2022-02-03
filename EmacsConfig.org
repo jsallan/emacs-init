@@ -114,56 +114,58 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
 
 #+begin_src emacs-lisp
 
-            ;; Make ESC quit prompts
-            (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  ;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-            (use-package general
-              :config
-              (general-create-definer drudge/leader-keys
-                :keymaps '(normal insert visual emacs)
-                :prefix "SPC"
-                :global-prefix "C-SPC")
+  (use-package general
+    :config
+    (general-create-definer drudge/leader-keys
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
 
-              (drudge/leader-keys
-                "t"  '(:ignore t :which-key "toggles")
-                "tt" '(counsel-load-theme :which-key "choose theme")
-                "i"  '(:ignore t :which-key "config and init files")
-                "ii"  '(my-open-init-file :which-key "open init file")
-                "ie"  '(my-open-emacs-config-org :which-key "open EmacsConfig file")
-                "b"  '(:ignore t :which-key "buffer cycle")
-                "bk" '(next-buffer :which-key "next buffer")
-                "bj" '(switch-to-prev-buffer :which-key "previous buffer")))
+    (drudge/leader-keys
+      "t"  '(:ignore t :which-key "toggles")
+      "tt" '(counsel-load-theme :which-key "choose theme")
+      "i"  '(:ignore t :which-key "config and init files")
+      "ii"  '(my-open-init-file :which-key "open init file")
+      "ie"  '(my-open-emacs-config-org :which-key "open EmacsConfig file")
+      "b"  '(:ignore t :which-key "buffer cycle")
+      "bk" '(next-buffer :which-key "next buffer")
+      "bj" '(switch-to-prev-buffer :which-key "previous buffer")))
 
-            (use-package evil
-              :init
-              (setq evil-want-integration t)
-              (setq evil-want-keybinding nil)
-              (setq evil-want-C-u-scroll t)
-              (setq evil-want-C-i-jump nil)
-              :config
-              (evil-mode 1)
-              (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-              (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    :config
+    (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
-              ;; Use visual line motions even outside of visual-line-mode buffers
-              (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-              (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-              (evil-set-initial-state 'messages-buffer-mode 'normal)
-              (evil-set-initial-state 'dashboard-mode 'normal))
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
 
-            (use-package evil-collection
-              :after evil
-              :config
-              (evil-collection-init))
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
 
-            (use-package undo-tree
-              :ensure t
-              :after evil
-              :diminish
-              :config
-              (evil-set-undo-system 'undo-tree)
-              (global-undo-tree-mode 1))
+  (use-package undo-tree
+    :ensure t
+    :after evil
+    :diminish
+    :config
+    (evil-set-undo-system 'undo-tree)
+    (global-undo-tree-mode 1))
 
 
 #+end_src
@@ -356,40 +358,6 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
 
-** Better Font Faces
-
-The =drudge/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.
-
-#+begin_src emacs-lisp
-
-  (defun drudge/org-font-setup ()
-    ;; Replace list hyphen with dot
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-    ;; Set faces for heading levels
-    (dolist (face '((org-level-1 . 1.4)
-                    (org-level-2 . 1.2)
-                    (org-level-3 . 1.1)
-                    (org-level-4 . 1.0)
-                    (org-level-5 . 1.1)
-                    (org-level-6 . 1.1)
-                    (org-level-7 . 1.1)
-                    (org-level-8 . 1.1)))
-      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-
-    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
-
-#+end_src
-
 ** Basic Config
 
 This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.  There's a lot to unpack in here so I'd recommend watching the videos for [[https://youtu.be/VcgjTEa0kU4][Part 5]] and [[https://youtu.be/PNE-mgkZ6HM][Part 6]] for a full explanation.
@@ -417,6 +385,9 @@ This section contains the basic configuration for =org-mode= plus the configurat
       ;; Show overview when open
       (setq org-startup-folded t)
       (setq org-hide-emphasis-markers t)
+    ;; date-time format
+      (setq-default org-display-custom-times t)
+      (setq org-time-stamp-custom-formats '("<%Y-%b-%d %a>" . "<%Y-%b-%d %a %H:%M>"))
       ;; (setq org-agenda-files
       ;;       '("~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
       ;;         "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
@@ -559,6 +530,40 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
 
   (use-package visual-fill-column
     :hook (org-mode . drudge/org-mode-visual-fill))
+
+#+end_src
+
+** Better Font Faces
+
+The =drudge/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.
+
+#+begin_src emacs-lisp
+
+  (defun drudge/org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+    ;; Set faces for heading levels
+    (dolist (face '((org-level-1 . 1.4)
+                    (org-level-2 . 1.2)
+                    (org-level-3 . 1.1)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
 #+end_src
 
