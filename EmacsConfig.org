@@ -112,6 +112,7 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil-mode]] for a Vi-like modal editing experience.  [[https://github.com/noctuid/general.el][general.el]] is used for easy keybinding configuration that integrates well with which-key.  [[https://github.com/emacs-evil/evil-collection][evil-collection]] is used to automatically configure various Emacs modes with Vi-like keybindings for evil-mode.
 
+** evil setup
 #+begin_src emacs-lisp
 
   ;; Make ESC quit prompts
@@ -130,6 +131,9 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
       "i"  '(:ignore t :which-key "config and init files")
       "ii"  '(my-open-init-file :which-key "open init file")
       "ie"  '(my-open-emacs-config-org :which-key "open EmacsConfig file")
+      "m"  '(:ignore t :which-key "move")
+      "mw"  '(:ignore t :which-key "move by word")
+      "ms"  '(:ignore t :which-key "move by sentence")
       "b"  '(:ignore t :which-key "buffer cycle")
       "bk" '(next-buffer :which-key "next buffer")
       "bj" '(switch-to-prev-buffer :which-key "previous buffer")))
@@ -159,14 +163,18 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
     :config
     (evil-collection-init))
 
-  (use-package undo-tree
-    :ensure t
-    :after evil
-    :diminish
-    :config
-    (evil-set-undo-system 'undo-tree)
-    (global-undo-tree-mode 1))
+#+end_src
 
+** undo-tree
+#+begin_src emacs-lisp
+
+  (use-package undo-tree
+   :ensure t
+   :after evil
+   :diminish
+   :config
+   (evil-set-undo-system 'undo-tree)
+   (global-undo-tree-mode 1))
 
 #+end_src
 
@@ -344,12 +352,26 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 
   (defhydra hydra-switch-buffer (:timeout 4)
     "switch buffer"
-    ("j" switch-to-next-buffer "next")
-    ("k" switch-to-prev-buffer "prev")
+    ("j" switch-to-next-buffer "prev")
+    ("k" switch-to-prev-buffer "next")
+    ("f" nil "finished" :exit t))
+
+  (defhydra hydra-move-word (:timeout 4)
+    "move word"
+    ("j" evil-backward-word-begin "prev")
+    ("k" evil-forward-word-end "next")
+    ("f" nil "finished" :exit t))
+
+  (defhydra hydra-move-sentence (:timeout 4)
+    "move sentence"
+    ("j" org-backward-sentence "prev")
+    ("k" org-forward-sentence "next")
     ("f" nil "finished" :exit t))
 
   (drudge/leader-keys
     "ts" '(hydra-text-scale/body :which-key "scale text")
+    "mw" '(hydra-move-word/body :which-key "move word")
+    "ms" '(hydra-move-sentence/body :which-key "move sentence")
     "bs" '(hydra-switch-buffer/body :which-key "switch buffers"))
 
 #+end_src
