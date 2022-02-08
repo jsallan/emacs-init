@@ -112,7 +112,7 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil-mode]] for a Vi-like modal editing experience.  [[https://github.com/noctuid/general.el][general.el]] is used for easy keybinding configuration that integrates well with which-key.  [[https://github.com/emacs-evil/evil-collection][evil-collection]] is used to automatically configure various Emacs modes with Vi-like keybindings for evil-mode.
 
-** evil setup
+** Leader key setup
 #+begin_src emacs-lisp
 
   ;; Make ESC quit prompts
@@ -137,6 +137,11 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
       "b"  '(:ignore t :which-key "buffer cycle")
       "bk" '(next-buffer :which-key "next buffer")
       "bj" '(switch-to-prev-buffer :which-key "previous buffer")))
+
+#+end_src
+
+** evil setup
+#+begin_src emacs-lisp
 
   (use-package evil
     :ensure t
@@ -234,6 +239,29 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
 
 #+end_src
 
+** Helm
+
+#+begin_src emacs-lisp
+
+  (use-package helm
+    :ensure t
+    :demand
+    :bind (("M-x" . helm-M-x)
+           ("C-x C-f" . helm-find-files)
+           ("C-x b" . helm-buffers-list)
+           ("C-x c o" . helm-occur)) ;SC
+    ("M-y" . helm-show-kill-ring) ;SC
+    ("C-x r b" . helm-filtered-bookmarks) ;SC
+    :preface (require 'helm-config)
+    :config (helm-mode 1))
+
+#+end_src
+
+** Helm-ag
+Helm-ag is supposed to enable searching within files using the silver-surfer search, i.e. must faster than grep.
+#+begin_src emacs-lisp
+  ;; (use-package helm-ag)
+#+end_src
 ** Ivy and Counsel
 
 [[https://oremacs.com/swiper/][Ivy]] is an excellent completion framework for Emacs.  It provides a minimal yet powerful selection menu that appears when you open files, switch buffers, and for many other tasks in Emacs.  Counsel is a customized set of commands to replace `find-file` with `counsel-find-file`, etc which provide useful commands for each of the default completion commands.
@@ -242,35 +270,35 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
 
 #+begin_src emacs-lisp
 
-  (use-package ivy
-    :diminish
-    :bind (("C-s" . swiper)
-           :map ivy-minibuffer-map
-           ("TAB" . ivy-alt-done)
-           ("C-l" . ivy-alt-done)
-           ("C-j" . ivy-next-line)
-           ("C-k" . ivy-previous-line)
-           :map ivy-switch-buffer-map
-           ("C-k" . ivy-previous-line)
-           ("C-l" . ivy-done)
-           ("C-d" . ivy-switch-buffer-kill)
-           :map ivy-reverse-i-search-map
-           ("C-k" . ivy-previous-line)
-           ("C-d" . ivy-reverse-i-search-kill))
-    :config
-    (ivy-mode 1))
+  ;; (use-package ivy
+  ;;   :diminish
+  ;;   :bind (("C-s" . swiper)
+  ;;          :map ivy-minibuffer-map
+  ;;          ("TAB" . ivy-alt-done)
+  ;;          ("C-l" . ivy-alt-done)
+  ;;          ("C-j" . ivy-next-line)
+  ;;          ("C-k" . ivy-previous-line)
+  ;;          :map ivy-switch-buffer-map
+  ;;          ("C-k" . ivy-previous-line)
+  ;;          ("C-l" . ivy-done)
+  ;;          ("C-d" . ivy-switch-buffer-kill)
+  ;;          :map ivy-reverse-i-search-map
+  ;;          ("C-k" . ivy-previous-line)
+  ;;          ("C-d" . ivy-reverse-i-search-kill))
+  ;;   :config
+  ;;   (ivy-mode 1))
 
-  (use-package ivy-rich
-    :init
-    (ivy-rich-mode 1))
+  ;; (use-package ivy-rich
+  ;;   :init
+  ;;   (ivy-rich-mode 1))
 
-   (use-package counsel
-     :bind (("C-M-j" . 'counsel-switch-buffer)
-            :map 
-           minibuffer-local-map
-           ("C-r" . 'counsel-minibuffer-history))
-    :config
-    (counsel-mode 1))
+  ;;  (use-package counsel
+  ;;    :bind (("C-M-j" . 'counsel-switch-buffer)
+  ;;           :map 
+  ;;          minibuffer-local-map
+  ;;          ("C-r" . 'counsel-minibuffer-history))
+  ;;   :config
+  ;;   (counsel-mode 1))
 
 #+end_src
 
