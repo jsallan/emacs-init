@@ -256,6 +256,7 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
     :config (helm-mode 1))
 
 #+end_src
+a
 
 ** Helm-ag
 Helm-ag is supposed to enable searching within files using the silver-surfer search, i.e. must faster than grep.
