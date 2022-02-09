@@ -112,59 +112,74 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil-mode]] for a Vi-like modal editing experience.  [[https://github.com/noctuid/general.el][general.el]] is used for easy keybinding configuration that integrates well with which-key.  [[https://github.com/emacs-evil/evil-collection][evil-collection]] is used to automatically configure various Emacs modes with Vi-like keybindings for evil-mode.
 
+** Leader key setup
 #+begin_src emacs-lisp
 
-            ;; Make ESC quit prompts
-            (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  ;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-            (use-package general
-              :config
-              (general-create-definer drudge/leader-keys
-                :keymaps '(normal insert visual emacs)
-                :prefix "SPC"
-                :global-prefix "C-SPC")
+  (use-package general
+    :config
+    (general-create-definer drudge/leader-keys
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
 
-              (drudge/leader-keys
-                "t"  '(:ignore t :which-key "toggles")
-                "tt" '(counsel-load-theme :which-key "choose theme")
-                "i"  '(:ignore t :which-key "config and init files")
-                "ii"  '(my-open-init-file :which-key "open init file")
-                "ie"  '(my-open-emacs-config-org :which-key "open EmacsConfig file")
-                "b"  '(:ignore t :which-key "buffer cycle")
-                "bk" '(next-buffer :which-key "next buffer")
-                "bj" '(switch-to-prev-buffer :which-key "previous buffer")))
+    (drudge/leader-keys
+      "t"  '(:ignore t :which-key "toggles")
+      "tt" '(counsel-load-theme :which-key "choose theme")
+      "i"  '(:ignore t :which-key "config and init files")
+      "ii"  '(my-open-init-file :which-key "open init file")
+      "ie"  '(my-open-emacs-config-org :which-key "open EmacsConfig file")
+      "m"  '(:ignore t :which-key "move")
+      "mw"  '(:ignore t :which-key "move by word")
+      "ms"  '(:ignore t :which-key "move by sentence")
+      "b"  '(:ignore t :which-key "buffer cycle")
+      "bk" '(next-buffer :which-key "next buffer")
+      "bj" '(switch-to-prev-buffer :which-key "previous buffer")))
 
-            (use-package evil
-              :init
-              (setq evil-want-integration t)
-              (setq evil-want-keybinding nil)
-              (setq evil-want-C-u-scroll t)
-              (setq evil-want-C-i-jump nil)
-              :config
-              (evil-mode 1)
-              (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-              (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+#+end_src
 
-              ;; Use visual line motions even outside of visual-line-mode buffers
-              (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-              (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+** evil setup
+#+begin_src emacs-lisp
 
-              (evil-set-initial-state 'messages-buffer-mode 'normal)
-              (evil-set-initial-state 'dashboard-mode 'normal))
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    :config
+    (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
-            (use-package evil-collection
-              :after evil
-              :config
-              (evil-collection-init))
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-            (use-package undo-tree
-              :ensure t
-              :after evil
-              :diminish
-              :config
-              (evil-set-undo-system 'undo-tree)
-              (global-undo-tree-mode 1))
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
 
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+
+#+end_src
+
+** undo-tree
+#+begin_src emacs-lisp
+
+  (use-package undo-tree
+   :ensure t
+   :after evil
+   :diminish
+   :config
+   (evil-set-undo-system 'undo-tree)
+   (global-undo-tree-mode 1))
 
 #+end_src
 
@@ -224,6 +239,31 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
 
 #+end_src
 
+** Helm
+
+#+begin_src emacs-lisp
+
+  (use-package helm
+    :ensure t
+    :demand
+    :bind (("M-x" . helm-M-x)
+           ("C-x C-f" . helm-find-files)
+           ("C-x b" . helm-buffers-list)
+           ("C-x c o" . helm-occur)) ;SC
+    ("M-y" . helm-show-kill-ring) ;SC
+    ("C-x r b" . helm-filtered-bookmarks) ;SC
+    :preface (require 'helm-config)
+    :config (helm-mode 1))
+
+#+end_src
+
+** Helm-ag
+Helm-ag is supposed to enable searching within files using the silver-surfer search, i.e. must faster than grep.
+
+#+begin_src emacs-lisp
+  ;; (use-package helm-ag)
+#+end_src
+
 ** Ivy and Counsel
 
 [[https://oremacs.com/swiper/][Ivy]] is an excellent completion framework for Emacs.  It provides a minimal yet powerful selection menu that appears when you open files, switch buffers, and for many other tasks in Emacs.  Counsel is a customized set of commands to replace `find-file` with `counsel-find-file`, etc which provide useful commands for each of the default completion commands.
@@ -232,35 +272,35 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
 
 #+begin_src emacs-lisp
 
-  (use-package ivy
-    :diminish
-    :bind (("C-s" . swiper)
-           :map ivy-minibuffer-map
-           ("TAB" . ivy-alt-done)
-           ("C-l" . ivy-alt-done)
-           ("C-j" . ivy-next-line)
-           ("C-k" . ivy-previous-line)
-           :map ivy-switch-buffer-map
-           ("C-k" . ivy-previous-line)
-           ("C-l" . ivy-done)
-           ("C-d" . ivy-switch-buffer-kill)
-           :map ivy-reverse-i-search-map
-           ("C-k" . ivy-previous-line)
-           ("C-d" . ivy-reverse-i-search-kill))
-    :config
-    (ivy-mode 1))
+  ;; (use-package ivy
+  ;;   :diminish
+  ;;   :bind (("C-s" . swiper)
+  ;;          :map ivy-minibuffer-map
+  ;;          ("TAB" . ivy-alt-done)
+  ;;          ("C-l" . ivy-alt-done)
+  ;;          ("C-j" . ivy-next-line)
+  ;;          ("C-k" . ivy-previous-line)
+  ;;          :map ivy-switch-buffer-map
+  ;;          ("C-k" . ivy-previous-line)
+  ;;          ("C-l" . ivy-done)
+  ;;          ("C-d" . ivy-switch-buffer-kill)
+  ;;          :map ivy-reverse-i-search-map
+  ;;          ("C-k" . ivy-previous-line)
+  ;;          ("C-d" . ivy-reverse-i-search-kill))
+  ;;   :config
+  ;;   (ivy-mode 1))
 
-  (use-package ivy-rich
-    :init
-    (ivy-rich-mode 1))
+  ;; (use-package ivy-rich
+  ;;   :init
+  ;;   (ivy-rich-mode 1))
 
-   (use-package counsel
-     :bind (("C-M-j" . 'counsel-switch-buffer)
-            :map 
-           minibuffer-local-map
-           ("C-r" . 'counsel-minibuffer-history))
-    :config
-    (counsel-mode 1))
+  ;;  (use-package counsel
+  ;;    :bind (("C-M-j" . 'counsel-switch-buffer)
+  ;;           :map 
+  ;;          minibuffer-local-map
+  ;;          ("C-r" . 'counsel-minibuffer-history))
+  ;;   :config
+  ;;   (counsel-mode 1))
 
 #+end_src
 
@@ -342,12 +382,26 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 
   (defhydra hydra-switch-buffer (:timeout 4)
     "switch buffer"
-    ("j" switch-to-next-buffer "next")
-    ("k" switch-to-prev-buffer "prev")
+    ("j" switch-to-next-buffer "prev")
+    ("k" switch-to-prev-buffer "next")
+    ("f" nil "finished" :exit t))
+
+  (defhydra hydra-move-word (:timeout 4)
+    "move word"
+    ("j" evil-backward-word-begin "prev")
+    ("k" evil-forward-word-end "next")
+    ("f" nil "finished" :exit t))
+
+  (defhydra hydra-move-sentence (:timeout 4)
+    "move sentence"
+    ("j" org-backward-sentence "prev")
+    ("k" org-forward-sentence "next")
     ("f" nil "finished" :exit t))
 
   (drudge/leader-keys
     "ts" '(hydra-text-scale/body :which-key "scale text")
+    "mw" '(hydra-move-word/body :which-key "move word")
+    "ms" '(hydra-move-sentence/body :which-key "move sentence")
     "bs" '(hydra-switch-buffer/body :which-key "switch buffers"))
 
 #+end_src
@@ -417,6 +471,9 @@ This section contains the basic configuration for =org-mode= plus the configurat
       ;; Show overview when open
       (setq org-startup-folded t)
       (setq org-hide-emphasis-markers t)
+    ;; date-time format
+      (setq-default org-display-custom-times t)
+      (setq org-time-stamp-custom-formats '("<%Y-%b-%d %a>" . "<%Y-%b-%d %a %H:%M>"))
       ;; (setq org-agenda-files
       ;;       '("~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
       ;;         "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
@@ -562,19 +619,53 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
 
 #+end_src
 
+** Better Font Faces
+
+The =drudge/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.
+
+#+begin_src emacs-lisp
+
+  (defun drudge/org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+    ;; Set faces for heading levels
+    (dolist (face '((org-level-1 . 1.4)
+                    (org-level-2 . 1.2)
+                    (org-level-3 . 1.1)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+
+#+end_src
+
 ** Configure Babel Languages
 
 To execute or export code in =org-mode= code blocks, you'll need to set up =org-babel-load-languages= for each language you'd like to use.  [[https://orgmode.org/worg/org-contrib/babel/languages.html][This page]] documents all of the languages that you can use with =org-babel=.
 
 #+begin_src emacs-lisp
 
-    (org-babel-do-load-languages
-      'org-babel-load-languages
-      '((emacs-lisp . t)
-        (python . t)
-        (shell . t)))
+  (org-babel-do-load-languages
+    'org-babel-load-languages
+    '((emacs-lisp . t)
+      (python . t)
+      (shell . t)))
 
-    (push '("conf-unix" . conf-unix) org-src-lang-modes)
+  (push '("conf-unix" . conf-unix) org-src-lang-modes)
 
 #+end_src
 
@@ -633,7 +724,19 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
   ;;  (add-to-list 'load-path "~/.emacs.d/private/org-roam-ui")
   ;;  (load-library "org-roam-ui")
 
+#+end_src
+** Org-roam-ui
 
+#+begin_src emacs-lisp
+  (use-package org-roam-ui
+    ;;:straight
+     ;; (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+      :after org-roam
+      :config
+      (setq org-roam-ui-sync-theme t
+            org-roam-ui-follow t
+            org-roam-ui-update-on-save t
+            org-roam-ui-open-on-start t)	)
 #+end_src
 
 ** Org-roam-ui
