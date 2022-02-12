@@ -256,7 +256,6 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
     :config (helm-mode 1))
 
 #+end_src
-a
 
 ** Helm-ag
 Helm-ag is supposed to enable searching within files using the silver-surfer search, i.e. must faster than grep.
@@ -430,6 +429,8 @@ This section contains the basic configuration for =org-mode= plus the configurat
 
       (setq org-agenda-start-with-log-mode t)
       (setq org-log-done 'time)
+    ;; if there's images in the file, startup with them displayed
+      (setq org-startup-with-inline-images t)
     ;; make text at heading levels line up
       (set-face-attribute 'org-hide nil :inherit 'fixed-pitch)
       (setq org-log-into-drawer t)
