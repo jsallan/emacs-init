@@ -249,8 +249,7 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
     :bind (("M-x" . helm-M-x)
            ("C-x C-f" . helm-find-files)
            ("C-x b" . helm-buffers-list)
-           ("C-s" . helm-occur) ;SC
-           ("C-h v" . electric-describe-variable))
+           ("C-s" . helm-occur))
     ("M-y" . helm-show-kill-ring) ;SC
     ("C-x r b" . helm-filtered-bookmarks) ;SC
     :preface (require 'helm-config)
@@ -361,9 +360,9 @@ Helm-ag is supposed to enable searching within files using the silver-surfer sea
     (counsel-describe-function-function #'helpful-callable)
     (counsel-describe-variable-function #'helpful-variable)
     :bind
-    ([remap describe-function] . counsel-describe-function)
+    ;;([remap describe-function] . counsel-describe-function)
     ([remap describe-command] . helpful-command)
-    ([remap describe-variable] . counsel-describe-variable)
+    ;; ([remap describe-variable] . counsel-describe-variable)
     ([remap describe-key] . helpful-key)
     ([remap describe-symbol] . helpful-symbol))
 
