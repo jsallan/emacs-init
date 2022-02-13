@@ -249,15 +249,17 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
     :bind (("M-x" . helm-M-x)
            ("C-x C-f" . helm-find-files)
            ("C-x b" . helm-buffers-list)
-           ("C-x c o" . helm-occur) ;SC
+           ("C-s" . helm-occur) ;SC
            ("C-h v" . electric-describe-variable))
     ("M-y" . helm-show-kill-ring) ;SC
     ("C-x r b" . helm-filtered-bookmarks) ;SC
     :preface (require 'helm-config)
     :config (helm-mode 1))
 
-  (add-to-list 'helm-completing-read-handlers-alist
-               '(org-roam-node-find . helm-completing-read-sync-default-handler))
+  ;; Fixes org-roam tags in helm buffer when using org-roam-node-find, i.e. C-c n f.
+  ;; Took from here: https://github.com/org-roam/org-roam/issues/1640 
+    (add-to-list 'helm-completing-read-handlers-alist
+                 '(org-roam-node-find . helm-completing-read-sync-default-handler))
 #+end_src
 
 ** Helm-ag
