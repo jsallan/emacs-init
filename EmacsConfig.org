@@ -364,7 +364,8 @@ Helm-ag is supposed to enable searching within files using the silver-surfer sea
     ([remap describe-command] . helpful-command)
     ;; ([remap describe-variable] . counsel-describe-variable)
     ([remap describe-key] . helpful-key)
-    ([remap describe-symbol] . helpful-symbol))
+    ([remap describe-symbol] . helpful-symbol)
+    ("C-h p" . helpful-at-point))
 
 #+end_src
 
