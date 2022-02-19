@@ -408,6 +408,23 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 
 #+end_src
 
+** Avy
+
+Avy is a package to quickly jump to a place in text. Using ~avy-goto-char-timer~, it will prompt for a character string, e.g. ~av~, and after the ~avy-timeout-seconds~ (default is 0.5s), it will provide with some options. Easiest is just to try it and see it!
+
+#+begin_src emacs-lisp
+
+    (use-package avy
+      :defer t
+      :bind
+      ("C-;" . avy-goto-char-timer)
+      :custom
+      (avy-style 'pre)
+      :custom-face
+      (avy-lead-face ((t (:background "#51afef" :foreground "#870000" :weight bold)))))
+
+#+end_src
+
 * Org Mode
 
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
