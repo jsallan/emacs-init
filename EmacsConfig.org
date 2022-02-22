@@ -413,6 +413,8 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 
 Avy is a package to quickly jump to a place in text. Using ~avy-goto-char-timer~, it will prompt for a character string, e.g. ~av~, and after the ~avy-timeout-seconds~ (default is 0.5s), it will provide with some options. Easiest is just to try it and see it!
 
+Really good blog: https://karthinks.com/software/avy-can-do-anything/
+
 #+begin_src emacs-lisp
 
     (use-package avy
