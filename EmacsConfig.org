@@ -94,6 +94,18 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 #+end_src
 
+** Tab Bar Configuration
+#+begin_src emacs-lisp
+
+  (tab-bar-mode)
+  (set-face-attribute 'tab-bar-tab nil :inherit 'doom-modeline-panel :foreground nil :background nil) 
+  (setq tab-bar-show 1)
+  (setq tab-bar-close-button-show nil)
+
+  (defun my/tab-bar-string () "HELLO")
+  (setq tab-bar-format '(my/tab-bar-string tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
+#+end_src
+
 ** Font Configuration
 
 #+begin_src emacs-lisp
