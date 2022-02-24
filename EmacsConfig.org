@@ -255,22 +255,22 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
 
 #+begin_src emacs-lisp
 
-  (use-package helm
-    :ensure t
-    :demand
-    :bind (("M-x" . helm-M-x)
-           ("C-x C-f" . helm-find-files)
-           ("C-x b" . helm-buffers-list)
-           ("C-s" . helm-occur))
-    ("M-y" . helm-show-kill-ring) ;SC
-    ("C-x r b" . helm-filtered-bookmarks) ;SC
-    :preface (require 'helm-config)
-    :config (helm-mode 1))
+  ;; (use-package helm
+  ;;   :ensure t
+  ;;   :demand
+  ;;   :bind (("M-x" . helm-M-x)
+  ;;          ("C-x C-f" . helm-find-files)
+  ;;          ("C-x b" . helm-buffers-list)
+  ;;          ("C-s" . helm-occur))
+  ;;   ("M-y" . helm-show-kill-ring) ;SC
+  ;;   ("C-x r b" . helm-filtered-bookmarks) ;SC
+  ;;   :preface (require 'helm-config)
+  ;;   :config (helm-mode 1))
 
-  ;; Fixes org-roam tags in helm buffer when using org-roam-node-find, i.e. C-c n f.
-  ;; Took from here: https://github.com/org-roam/org-roam/issues/1640 
-    (add-to-list 'helm-completing-read-handlers-alist
-                 '(org-roam-node-find . helm-completing-read-sync-default-handler))
+  ;; ;; Fixes org-roam tags in helm buffer when using org-roam-node-find, i.e. C-c n f.
+  ;; ;; Took from here: https://github.com/org-roam/org-roam/issues/1640 
+  ;;   (add-to-list 'helm-completing-read-handlers-alist
+  ;;                '(org-roam-node-find . helm-completing-read-sync-default-handler))
 #+end_src
 
 ** Helm-ag
@@ -322,24 +322,35 @@ Helm-ag is supposed to enable searching within files using the silver-surfer sea
 
 #+begin_src emacs-lisp
 
-  ;; (use-package vertico
-  ;;   :ensure t
-  ;;   :bind (:map vertico-map
-  ;;          ("C-j" . vertico-next)
-  ;;          ("C-k" . vertico-previous)
-  ;;          ("C-f" . vertico-exit)
-  ;;          :map minibuffer-local-map
-  ;;          ("M-h" . dw/minibuffer-backward-kill))
-  ;;   :custom
-  ;;   (vertico-cycle t)
-  ;;   :custom-face
-  ;;   (vertico-current ((t (:background "#3a3f5a"))))
-  ;;   :init
-  ;;   (vertico-mode))
+  (use-package vertico
+    :ensure t
+    :bind (:map vertico-map
+           ("C-j" . vertico-next)
+           ("C-k" . vertico-previous)
+           ("C-f" . vertico-exit)
+           :map minibuffer-local-map
+           ("M-h" . dw/minibuffer-backward-kill))
+    :custom
+    (vertico-cycle t)
+    :custom-face
+    (vertico-current ((t (:background "#3a3f5a"))))
+    :init
+    (vertico-mode))
 
-  ;; (use-package savehist
-  ;;   :init
-  ;;   (savehist-mode))
+  (use-package savehist
+    :init
+    (savehist-mode))
+
+#+end_src
+
+** Orderless
+
+#+begin_src emacs-lisp
+
+  (use-package orderless
+    :ensure t
+    :config
+    (setq completion-styles '(orderless)))
 
 #+end_src
 
@@ -347,13 +358,13 @@ Helm-ag is supposed to enable searching within files using the silver-surfer sea
 
 #+begin_src emacs-lisp
 
-  ;; (use-package marginalia
-  ;;   :after vertico
-  ;;   :ensure t
-  ;;   :custom
-  ;;   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  ;;   :init
-  ;;   (marginalia-mode))
+  (use-package marginalia
+    :after vertico
+    :ensure t
+    :custom
+    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+    :init
+    (marginalia-mode))
 
 #+end_src
 
