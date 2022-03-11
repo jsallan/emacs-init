@@ -36,6 +36,8 @@ In this document I've added links in many places that lead you to documentation 
       ((string= user-login-name "SESA93320")(setq drudge/system-directory-path-start "on work computer"))
       ((string= user-login-name "Jason")(setq drudge/system-directory-path-start "C:/Users/Jason/Documents/github/")))))
 
+    (setq system-specific-org-roam-directory (expand-file-name "org/roam" drudge/system-directory-path-start))
+
 #+end_src
 
 * Basic emacs config
@@ -316,9 +318,11 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
 
 ** Helm-ag
 Helm-ag is supposed to enable searching within files using the silver-surfer search, i.e. must faster than grep.
+
 #+begin_src emacs-lisp
   ;; (use-package helm-ag)
 #+end_src
+
 ** Ivy and Counsel
 
 [[https://oremacs.com/swiper/][Ivy]] is an excellent completion framework for Emacs.  It provides a minimal yet powerful selection menu that appears when you open files, switch buffers, and for many other tasks in Emacs.  Counsel is a customized set of commands to replace `find-file` with `counsel-find-file`, etc which provide useful commands for each of the default completion commands.
@@ -359,6 +363,20 @@ Helm-ag is supposed to enable searching within files using the silver-surfer sea
 
 #+end_src
 
+** Marginalia
+
+#+begin_src emacs-lisp
+
+  ;; (use-package marginalia
+  ;;   :after vertico
+  ;;   :ensure t
+  ;;   :custom
+  ;;   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  ;;   :init
+  ;;   (marginalia-mode))
+
+#+end_src
+
 ** Vertico
 
 #+begin_src emacs-lisp
@@ -378,23 +396,6 @@ Helm-ag is supposed to enable searching within files using the silver-surfer sea
   ;;   :init
   ;;   (vertico-mode))
 
-  ;; (use-package savehist
-  ;;   :init
-  ;;   (savehist-mode))
-
-#+end_src
-
-** Marginalia
-
-#+begin_src emacs-lisp
-
-  ;; (use-package marginalia
-  ;;   :after vertico
-  ;;   :ensure t
-  ;;   :custom
-  ;;   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  ;;   :init
-  ;;   (marginalia-mode))
 
 #+end_src
 
@@ -632,8 +633,8 @@ This section contains the basic configuration for =org-mode= plus the configurat
 
 #+end_src
 
-*** Nicer Heading Bullets
-
+** Nicer Heading Bullets
+*** org-bullets
 [[https://github.com/sabof/org-bullets][org-bullets]] replaces the heading stars in =org-mode= buffers with nicer looking characters that you can control.  Another option for this is [[https://github.com/integral-dw/org-superstar-mode][org-superstar-mode]] which we may cover in a later video.
 
 #+begin_src emacs-lisp
@@ -641,12 +642,25 @@ This section contains the basic configuration for =org-mode= plus the configurat
   (use-package org-bullets
     :after org
     :hook (org-mode . org-bullets-mode))
+
     ;; :custom
     ;; (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 #+end_src
 
-*** Center Org Buffers
+*** org-superstar
+Make nice looking bullets.
+
+#+begin_src emacs-lisp
+
+  ;; (use-package org-superstar  ;; Improved version of org-bullets
+  ;;   :ensure t
+  ;;   :config
+  ;;   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+
+#+end_src
+
+** Center Org Buffers
 
 We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]] to center =org-mode= buffers for a more pleasing writing experience as it centers the contents of the buffer horizontally to seem more like you are editing a document.  This is really a matter of personal preference so you can remove the block below if you don't like the behavior.
 
@@ -723,9 +737,8 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
     ;;     (if (eq system-type 'gnu/linux)
     ;;           (setq system-specific-org-roam-directory "~/github/org/roam"))
 
-    (setq system-specific-org-roam-directory (expand-file-name "org/roam" drudge/system-directory-path-start))
 
-        (use-package org-roam
+  (use-package org-roam
           :ensure t
           :init
           (setq org-roam-v2-ack t)
