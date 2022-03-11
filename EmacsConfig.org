@@ -482,6 +482,17 @@ Really good blog: https://karthinks.com/software/avy-can-do-anything/
 
 #+end_src
 
+** Goggles
+
+#+begin_src emacs-lisp
+
+  (use-package goggles
+    :hook ((prog-mode text-mode) . goggles-mode)
+    :config
+    (setq-default goggles-pulse t)) ;; set to nil to disable pulsing
+
+#+end_src
+
 * Org Mode
 
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
