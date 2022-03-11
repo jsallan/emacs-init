@@ -741,6 +741,7 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
 #+end_src
 
 ** Org-roam
+*** roam setup
 
 #+begin_src emacs-lisp
 
@@ -768,11 +769,14 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
                "\n* Source\n\Book: [[id:7B6531E9-3AF7-47D3-A7CA-4EE56E1E9431][Scrum Mastery]]\nPage: %^{page}\n\n\n* Book Notes\n\n%?\n* Thoughts and Ideas\n"
              :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+captured: %U")
               :unnarrowed t)))
-         :bind (("C-c n l" . org-roam-buffer-toggle)
+          :bind (("C-c n l" . org-roam-buffer-toggle)
                  ("C-c n f" . org-roam-node-find)
                  ("C-c n i" . org-roam-node-insert)
                  ("C-c n t" . org-roam-tag-add)
                  ("C-c n g" . org-roam-ui-mode)
+                 ("C-c n d c" . org-roam-dailies-capture-today)
+                 ("C-c n d g" . org-roam-dailies-goto-today)
+                 ("C-c n d d" . org-roam-dailies-goto-date)
                  :map org-mode-map
                  ("C-M-i" . completion-at-point))
           :config
@@ -793,6 +797,73 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
 
   ;;  (add-to-list 'load-path "~/.emacs.d/private/org-roam-ui")
   ;;  (load-library "org-roam-ui")
+
+
+#+end_src
+*** dired setup for side window
+Taken from https://org-roam.discourse.group/t/org-roam-dailies-how-to-browse-through-previous-days/1018/6
+
+#+begin_src emacs-lisp
+
+  ;;; Edited 20201-02-08
+  ;;; Dired
+  (defun my/check-org-roam-buffer-p (buf)
+    "Return non-nil if BUF is org-roam-buffer that can be refleshed.
+  It also checks the following:
+  - `org-roam' is indeed loaded
+  - BUF is visiting an Org-roam file
+  - org-roam-buffer exists"
+    (and (functionp #'org-roam--org-roam-file-p)
+         (org-roam--org-roam-file-p (buffer-file-name buf))
+         (not (eq (org-roam-buffer--visibility) 'none))))
+
+  ;;;###autoload
+  (defun my/dired-display-next-file ()
+    "In Dired directory, go to the next file, and open it.
+              If `org-roam-mode' is active, update the org-roam-buffer."
+    (interactive)
+    (dired-next-line 1)
+    (let ((buf (find-file-noselect (dired-get-file-for-visit))))
+      (display-buffer buf t)
+      (when (my/check-org-roam-buffer-p buf)
+        (with-current-buffer buf
+          (setq org-roam--current-buffer buf)
+          (org-roam-buffer-update)))))
+
+  ;;;###autoload
+  (defun my/dired-display-prev-file ()
+    "In Dired directory, go to the previous file, and open it.
+              If `org-roam-mode' is active, update the org-roam-buffer."
+    (interactive)
+    (dired-previous-line 1)
+    (let ((buf (find-file-noselect (dired-get-file-for-visit))))
+      (display-buffer buf t)
+      (when (my/check-org-roam-buffer-p buf)
+        (with-current-buffer buf
+          (setq org-roam--current-buffer buf)
+          (org-roam-buffer-update)))))
+
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (dired-hide-details-mode 1)
+              ;; I don't use dired-subtree at the moment
+              (define-key dired-mode-map (kbd "<tab>") #'dired-subtree-toggle)
+              ;;(define-key dired-mode-map (kbd "<C-tab>") #'dired-subtree-cycle)
+              (define-key dired-mode-map (kbd "<SPC>") #'my/dired-display-next-file)
+              (define-key dired-mode-map (kbd "<down>") #'my/dired-display-next-file)
+              (define-key dired-mode-map (kbd "<up>") #'my/dired-display-prev-file)))
+
+(defun my/dired-in-side-buffer ()
+  "Display Dired in a side window."
+  (interactive)
+  (let* ((dir (read-directory-name "Directory: "))
+         (buf (dired-noselect dir)))
+    (select-window
+     (display-buffer-in-side-window buf
+                                   '((side . left)
+                                     (window-width . 30)
+                                     (slot . -1)
+                                     (window-parameters . ((mode-line-format . none))))))))
 
 
 #+end_src
@@ -882,18 +953,18 @@ This snippet adds a hook to =org-mode= buffers so that drudge/org-babel-tangle-c
 #+RESULTS:
 | (lambda nil (add-hook 'after-save-hook #'drudge/org-babel-tangle-config)) | org-bullets-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | drudge/org-mode-visual-fill | drudge/org-mode-setup | (lambda nil (display-line-numbers-mode 0)) |
 
-** Deft for Roam
+** Deft for Roam <deactivated>
 Use Deft to search through Roam notes. Taken from [[https://lucidmanager.org/productivity/taking-notes-with-emacs-org-mode-and-org-roam/][here]].
 
 #+begin_src emacs-lisp
-  (use-package deft
-    :config
-    (setq deft-directory system-specific-org-roam-directory
-          deft-recursive t
-           deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
-           deft-use-filename-as-title t)
-     :bind
-     ("C-c n d" . deft))
+  ;; (use-package deft
+  ;;   :config
+  ;;   (setq deft-directory system-specific-org-roam-directory
+  ;;         deft-recursive t
+  ;;          deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
+  ;;          deft-use-filename-as-title t)
+  ;;    :bind
+  ;;    ("C-c n d" . deft))
 #+end_src
 
 #+RESULTS:
