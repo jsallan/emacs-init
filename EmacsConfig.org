@@ -304,6 +304,7 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
     :bind (("M-x" . helm-M-x)
            ("C-x C-f" . helm-find-files)
            ("C-x b" . helm-buffers-list)
+           ("C-h a" . helm-apropos)
            ("C-s" . helm-occur))
     ("M-y" . helm-show-kill-ring) ;SC
     ("C-x r b" . helm-filtered-bookmarks) ;SC
@@ -510,6 +511,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
 
     (use-package org
       :hook (org-mode . drudge/org-mode-setup)
+      :bind (("C-c a" . org-agenda))
       :config
       (setq org-ellipsis " ▾")
   ;;    (setq org-blank-before-new-entry
@@ -529,7 +531,8 @@ This section contains the basic configuration for =org-mode= plus the configurat
     ;; date-time format
       (setq-default org-display-custom-times t)
       (setq org-time-stamp-custom-formats '("<%Y-%b-%d %a>" . "<%Y-%b-%d %a %H:%M>"))
-      ;; (setq org-agenda-files
+      ;; (setq org-agenda-files system-specific-org-roam-directory)
+      (setq org-agenda-files (directory-files-recursively system-specific-org-roam-directory "\\.org$"))
       ;;       '("~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
       ;;         "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
       ;;         "~/Projects/Code/emacs-from-scratch/OrgFiles/Birthdays.org"))
